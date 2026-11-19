@@ -1,5 +1,7 @@
 # On Second Read
 
+A playable evidence casebook and a local LLM annotation studio. Investigate the authored cases below, or [extract and review a graph from your own dossier](#annotation-studio).
+
 Two reviewers assess the same portfolio. One reads the cover credit. The other reads the team diary. Before you open their evidence table, can you tell which conclusion you would revisit?
 
 **[Download the playable browser edition](https://github.com/marouaneoa/On-Second-Read/raw/refs/heads/main/docs/index.html)** · Open the downloaded HTML file in your browser. It works offline.
@@ -51,3 +53,39 @@ Code, ontology, case texts and illustration are available under the [MIT License
 ## Build the browser edition
 
 Run `python build_web.py` after editing the RDF, queries or files in `web/`. The builder runs all four SPARQL queries against each supported citation/criterion combination and embeds the results in `docs/index.html`. Hypothetical edits apply to Reviewer B’s recorded links. Their original statement stays visible for comparison. Browser play requires no Python or server. To serve the artifact over HTTP locally, run `python -m http.server 8000 --directory docs` and open `http://localhost:8000`.
+
+## Annotation studio
+
+What happens when a language model has to justify every proposed graph edge against the actual dossier? The studio turns this into a repeatable annotation experiment. The public game contains authored examples. The local studio accepts new dossiers, calls a local model, and lets you review its proposed judgments before compiling them to OWL individuals.
+
+From the repository root, with the Python dependencies installed, run:
+
+```bash
+python studio.py
+```
+
+Open **http://127.0.0.1:8765**. To explore immediately, choose *The moving goalpost*, load the authored annotations, then accept the reviewed set. Inspect the outside-rubric row and download the Turtle graph for Protégé. Edit Reviewer B’s criterion to `Delivery` and accept again to see that row disappear.
+
+### Use a real model
+
+Install [Ollama](https://ollama.com/download) and start its local service. With the service running, fetch the default model once:
+
+```bash
+ollama pull qwen2.5:3b
+```
+
+Choose **Propose judgments with Ollama**. To use another installed model, launch the studio with `OSR_MODEL=your-model-name python studio.py`. The model receives the dossier and the OWL vocabulary. The request uses [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs) to propose reviewer, wording, criterion and passage fields. Reference answers are excluded from the request.
+
+1. Edit the dossier JSON to supply a complete rubric, identified source passages and named reviews.
+2. Review each proposed link. A valid passage ID shows that a passage exists. Deciding whether it supports the judgment requires reading it.
+3. Correct or remove unsupported proposals. Accepting the set checks the reviewer, exact excerpt, passage ID, and duplicate rows. The model can omit a judgment entirely, so also compare against the original reviews.
+4. Inspect the four SPARQL results. The Turtle download contains the ontology, source text, judgments and an annotation activity identifying the origin of the reviewed set. Download each version you want to keep before changing dossiers.
+
+### Measure extraction quality
+
+```bash
+python evaluate.py
+python evaluate.py --live > evaluation.json
+```
+
+The first command runs a deterministic baseline that assigns the first rubric criterion and first passage to every review. It matches **4 of 6** authored judgments. The second compares the configured Ollama model against the same references. Each judgment is scored as an exact tuple of reviewer, excerpt, criterion and passage ID. The JSON reports per-case matches, extras and omissions plus micro precision, recall and F1. A synonymous criterion label or shorter accurate excerpt can therefore count as a miss. These six examples are a debugging benchmark. To estimate generalization, author independent cases and keep their labels out of prompt development.

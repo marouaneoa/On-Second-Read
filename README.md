@@ -1,47 +1,38 @@
 # On Second Read
 
-**[Play the hosted casebook](https://marouaneoa.github.io/On-Second-Read/)**
+Two reviewers assess the same volunteer. One reads a cover sheet naming Sam as project lead. The other reads a diary describing how Sam reassigned volunteers when a driver missed a handoff. Which document would you use to assess leadership?
 
-Try [What would change your mind?](https://marouaneoa.github.io/On-Second-Read/#request-a-document) to request one record before reading the full pantry case. In [Repair the rubric](https://marouaneoa.github.io/On-Second-Read/#repair-the-rubric), remove one RDF triple and inspect how the outside-rubric SPARQL result changes.
+On Second Read is a playable casebook about how people use evidence in hiring decisions. Read two reviews, choose the passage that supports each judgment, then follow the links in an ontology to see how the reviewers reached their conclusions.
 
-Start with the library practice excerpt. Choose a phrase, reveal the ontology links, and compare your choice with the worked Codex answer or a live model. Saved comparisons and reflections stay in your browser.
+**[Play the hosted casebook](https://marouaneoa.github.io/On-Second-Read/)** · [Understand the graph](#understand-the-graph) · [Run the annotation studio](#annotation-studio)
 
-Choose a case and open **Explore ontology** to navigate classes or case-specific evidence. The **LLM workbench** can send a dossier directly from your browser to a provider using your personal key, or inspect a JSON response pasted from another model. The browser compares proposed wording with the original review and resolves passage IDs. Assess the meaning of each citation yourself.
+## Play the casebook
 
-A playable evidence casebook and a local LLM annotation studio. Investigate the authored cases below, or [extract and review a graph from your own dossier](#annotation-studio).
+Start with the library exercise on the landing page. Choose a phrase, follow it through the graph, and compare your interpretation with a worked answer. Then try one of the five fictional cases. Each is also readable on GitHub.
 
-Two reviewers assess the same portfolio. One reads the cover credit. The other reads the team diary. Before you open their evidence table, can you tell which conclusion you would revisit?
-
-**[Download the playable browser edition](https://github.com/marouaneoa/On-Second-Read/raw/refs/heads/main/docs/index.html)** · Open the downloaded HTML file in your browser. It works offline.
-
-Read both reviews, commit to a finding and a supporting reason, then inspect the source trace. In the evidence lab, change Reviewer B’s citation or criterion to see which SPARQL results appear or disappear. Progress is saved in your browser when storage is available.
-
-[Play the Markdown edition on GitHub](cases/missing-credit/README.md)
-
-| Case | Your question |
+| Case | Question to investigate |
 | --- | --- |
-| [The moving goalpost](cases/moving-goalpost/README.md) | Where did a new requirement enter the decision? |
-| [Different words, same reasoning](cases/same-reasoning/README.md) | How much does the wording change the evidence trail? |
-| [The night shift](cases/the-night-shift/README.md) | Did anyone accept responsibility for the faulty stage light? |
-| [Whose words count?](cases/whose-words/README.md) | What does a visitor collecting a ticket tell us about the writer? |
+| [The missing credit](cases/missing-credit/README.md) | Which record shows what Sam actually did when the delivery went wrong? |
+| [The moving goalpost](cases/moving-goalpost/README.md) | Did the panel ask Alex to deliver a service or to demonstrate management experience? |
+| [Different words, same reasoning](cases/same-reasoning/README.md) | Do two differently worded reviews point to the same test? |
+| [The night shift](cases/the-night-shift/README.md) | When does the record show that someone accepted responsibility for the faulty light? |
+| [Whose words count?](cases/whose-words/README.md) | What does a visitor collecting a ticket tell us about Ravi’s instructions? |
 
-Read the dossier and both reviews, make a prediction, then expand the reveal. Every row comes from a query you can inspect. These original fictional cases explore consistency in hiring reviews. They support questions about the documented reasoning. Establishing a reviewer’s intent requires additional evidence.
+For a hands-on investigation, [request one document](https://marouaneoa.github.io/On-Second-Read/#request-a-document) before judging the pantry case, or [repair the clinic’s rubric](https://marouaneoa.github.io/On-Second-Read/#repair-the-rubric) by removing a single graph relationship. Within each case, **Explore ontology** lets you follow the evidence. After making a prediction, use the **Evidence lab** to change a citation and compare query results.
 
-## Inside the graph
+You can [download the browser edition](https://github.com/marouaneoa/On-Second-Read/raw/refs/heads/main/docs/index.html) and play offline. Progress and saved reflections stay in your browser. The optional **LLM workbench** accepts a pasted model response or sends the dossier directly to your selected provider using your personal API key.
 
-A case lists criteria and has reviews. Each review contains a judgment. Giving the judgment its own identifier lets us attach the criterion and cited passage to that particular assessment, even when one review makes several claims. The passage carries the exact quotation and points to its source document.
+## Understand the graph
 
-![Annotated graph showing the shared criterion and two distinct citations in The missing credit](docs/trace.svg)
+The important distinction in the clinic case is between a standard **the panel published** and one **a reviewer applied**. A judgment has its own identifier so you can ask which criterion it applies, which passage it cites, and where that passage came from.
 
-Explore the [OWL vocabulary in Turtle](ontology/review.ttl) and the [first case’s individuals](cases/missing-credit/data.ttl). In Protégé, open the vocabulary and browse **Entities → Classes** and **Object properties**. For a combined view, run the following after setup, open the resulting Turtle file in Protégé, and select **Individuals by class → Judgment**. Inspect the property assertions for judgment B.
+![Two judgments applying the same leadership criterion and citing different passages](docs/trace.svg)
 
-```bash
-python -c "from casebook import ROOT, load; load(ROOT/'cases/missing-credit').serialize('missing-credit-view.ttl', format='turtle')"
-```
+The [ontology](ontology/review.ttl) defines the vocabulary. Each dossier supplies [case-specific facts](cases/missing-credit/data.ttl). The [four SPARQL queries](queries/) trace sources, compare the evidence reviewers cite, and find judgments that use an unlisted criterion. Each fictional case provides a complete rubric. With a partial real-world record, a missing criterion would leave the question open. Establishing a reviewer’s intent would require further evidence.
 
 ## Reproduce a reveal
 
-From a checkout, create a Python environment and install RDFLib. The following commands use a Linux, WSL or macOS shell.
+From the repository root, set up Python once and run the first case. These commands work in a Linux, WSL, or macOS shell.
 
 ```bash
 python3 -m venv .venv
@@ -50,85 +41,58 @@ python -m pip install -r requirements.txt
 python casebook.py missing-credit
 ```
 
-Run `python casebook.py all --write` to refresh the five Markdown reveals. Run `python -m unittest discover -s tests -v` to check the expected answers and try a citation change in memory.
+To explore the same case in Protégé, export the vocabulary and individuals together. Open the resulting file and select **Individuals by class → Judgment → Judgment B** to inspect its criterion and source passage.
 
-## Reading the results
-
-The [four SPARQL queries](queries/) trace sources, compare citations under a shared criterion, find judgments outside the rubric, and identify shared citations under different wording. The runner loads one case at a time. Each fictional rubric explicitly lists all its criteria. That completeness assumption lets the outside-rubric query use absence as evidence. In a partial record, a missing entry would leave the question open. Shared citations establish overlap in the recorded evidence. Two people can cite the same passage and interpret it differently.
-
-For a reader check, pick a judgment and locate its exact quotation in the dossier. What could you conclude from the case, and what would you still need to know?
-
-Code, ontology, case texts and illustration are available under the [MIT License](LICENSE).
-
-## Build the browser edition
-
-Run `python build_web.py` after editing the RDF, queries or files in `web/`. The builder runs all four SPARQL queries against each supported citation/criterion combination and embeds the results in `docs/index.html`. Hypothetical edits apply to Reviewer B’s recorded links. Their original statement stays visible for comparison. Browser play requires no Python or server. To serve the artifact over HTTP locally, run `python -m http.server 8000 --directory docs` and open `http://localhost:8000`.
+```bash
+python -c "from casebook import ROOT, load; load(ROOT/'cases/missing-credit').serialize('missing-credit-view.ttl', format='turtle')"
+```
 
 ## Annotation studio
 
-What happens when a language model has to justify every proposed graph edge against the actual dossier? The studio turns this into a repeatable annotation experiment. The public game contains authored examples. The local studio accepts new dossiers, calls a local model, and lets you review its proposed judgments before compiling them to OWL individuals.
+The local studio lets you bring a dossier of your own, review proposed judgments, and export the accepted graph as Turtle. After [setting up Python](#reproduce-a-reveal), run `python studio.py` and open [the local studio](http://127.0.0.1:8765).
 
-From the repository root, with the Python dependencies installed, run:
+1. Choose *The moving goalpost* and click **Load authored annotations** for a first run without a key. To try your own case, edit the dossier JSON with a complete rubric, named reviews, and identified source passages.
+2. Inspect each judgment alongside the reviewer’s exact wording and the cited passage. Correct a mismatched criterion, remove an unsupported link, or add a missing judgment.
+3. Accept the reviewed set to run all four queries. In the clinic example, try changing Reviewer B’s criterion to `Delivery` and see which result disappears. Download any graph you want to keep before switching dossiers.
 
-```bash
-python studio.py
-```
+### Choose an LLM provider
 
-Open **http://127.0.0.1:8765**. To explore immediately, choose *The moving goalpost*, load the authored annotations, then accept the reviewed set. Inspect the outside-rubric row and download the Turtle graph for Protégé. Edit Reviewer B’s criterion to `Delivery` and accept again to see that row disappear.
+Select a provider in the studio and click **Propose judgments** to generate suggestions. The model receives the dossier and OWL vocabulary. The reference answers are excluded. Model overrides and API keys for the **local studio and benchmark** are read from the server environment at startup.
 
-### Use a real model
-
-Install [Ollama](https://ollama.com/download) and start its local service. With the service running, fetch the default model once:
-
-```bash
-ollama pull qwen2.5:3b
-```
-
-Choose **Local · Ollama** and click **Propose judgments**. To use another installed model, launch the studio with `OSR_MODEL=your-model-name python studio.py`. The model receives the dossier and the OWL vocabulary. The request uses [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs) to propose reviewer, wording, criterion and passage fields. Reference answers are excluded from the request.
-
-1. Edit the dossier JSON to supply a complete rubric, identified source passages and named reviews.
-2. Review each proposed link. A valid passage ID shows that a passage exists. Deciding whether it supports the judgment requires reading it.
-3. Correct or remove unsupported proposals. Accepting the set checks the reviewer, exact excerpt, passage ID, and duplicate rows. The model can omit a judgment entirely, so also compare against the original reviews.
-4. Inspect the four SPARQL results. The Turtle download contains the ontology, source text, judgments and an annotation activity identifying the origin of the reviewed set. Download each version you want to keep before changing dossiers.
-
-### Measure extraction quality
-
-```bash
-python evaluate.py
-python evaluate.py --live > evaluation.json
-```
-
-The first command runs a deterministic baseline that assigns the first rubric criterion and first passage to every review. It matches **6 of 10** authored judgments. The second compares the configured Ollama model against the same references. Each judgment is scored as an exact tuple of reviewer, excerpt, criterion and passage ID. The JSON reports per-case matches, extras and omissions plus micro precision, recall and F1. A synonymous criterion label or shorter accurate excerpt can therefore count as a miss. These ten judgments are a debugging benchmark. To estimate generalization, author independent cases and keep their labels out of prompt development.
-
-### Use an OpenAI API key
-
-The studio also supports OpenAI Chat Completions with [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs). In a Bash terminal with the project environment active, enter your key at the hidden prompt and start the server:
-
-```bash
-read -rsp 'OpenAI API key: ' OPENAI_API_KEY && echo
-export OPENAI_API_KEY
-python studio.py
-```
-
-Restart any existing studio process first so it receives the environment variable. At **http://127.0.0.1:8765**, choose **Hosted · OpenAI API** and click **Propose judgments**. This sends the dossier and ontology to OpenAI and uses your account’s API credit. The Python server reads the key from its environment. To select a different model that supports strict JSON Schema, set `OSR_OPENAI_MODEL` before startup (default `gpt-4o-mini`).
-
-For the five-case benchmark, run `python evaluate.py --live --provider openai` with the same environment. Local Ollama remains the default.
-
-### Use OpenRouter or Google Gemini
-
-Choose either provider in the same studio dropdown. Set its server-side key before launching the studio or benchmark.
-
-| Provider | Key variable | Optional model override | Default model |
+| Provider | API key variable | Optional model override | Default model |
 | --- | --- | --- | --- |
+| Ollama (local) | None | `OSR_MODEL` | `qwen2.5:3b` |
+| OpenAI | `OPENAI_API_KEY` | `OSR_OPENAI_MODEL` | `gpt-4o-mini` |
 | OpenRouter | `OPENROUTER_API_KEY` | `OSR_OPENROUTER_MODEL` | `openai/gpt-4o-mini` |
 | Google Gemini | `GEMINI_API_KEY` | `OSR_GEMINI_MODEL` | `gemini-3.8-flash` |
 
-For example, in Bash:
+For local inference, install [Ollama](https://ollama.com/download), start its service, and run `ollama pull qwen2.5:3b`. For hosted inference, set the appropriate key before starting or restarting the studio. For example, in Bash:
 
 ```bash
-read -rsp 'OpenRouter key: ' OPENROUTER_API_KEY && echo
-export OPENROUTER_API_KEY
+read -rsp 'Gemini API key: ' GEMINI_API_KEY && echo
+export GEMINI_API_KEY
 python studio.py
 ```
 
-For Gemini, use `GEMINI_API_KEY` in both shell commands. Restart the studio after changing keys or model settings. For a benchmark run use `python evaluate.py --live --provider openrouter` or `python evaluate.py --live --provider gemini`. Each request sends the dossier and ontology through the selected service. Choose models that support structured JSON output. See the [OpenRouter schema guide](https://openrouter.ai/docs/guides/features/structured-outputs) and [Gemini schema guide](https://ai.google.dev/gemini-api/docs/structured-output).
+Hosted requests use the selected provider account. When overriding a model, choose one that supports structured JSON output. Provider references: [Ollama](https://docs.ollama.com/capabilities/structured-outputs), [OpenAI](https://developers.openai.com/api/docs/guides/structured-outputs), [OpenRouter](https://openrouter.ai/docs/guides/features/structured-outputs), and [Gemini](https://ai.google.dev/gemini-api/docs/structured-output).
+
+### Measure extraction quality
+
+Run `python evaluate.py` for the baseline. To compare a model before human corrections, run `python evaluate.py --live --provider gemini > evaluation.json`. The other provider names are `ollama`, `openai`, and `openrouter`.
+
+The baseline assigns every review the first rubric criterion and first passage. It matches **6 of 10** authored judgments. The report lists missing and extra judgments and gives micro precision, recall, and F1. Matching uses the exact reviewer, excerpt, criterion, and passage ID, so even a shorter accurate quotation can count as a miss. These five cases are a small debugging benchmark.
+
+## Build the browser edition
+
+After editing cases, queries, or browser source, run the relevant commands from the repository root.
+
+| Task | Command |
+| --- | --- |
+| Refresh the Markdown reveals | `python casebook.py all --write` |
+| Rebuild the offline game in `docs/index.html` | `python build_web.py` |
+| Run the checks | `python -m unittest discover -s tests -v` |
+| Preview at `http://localhost:8000` | `python -m http.server 8000 --directory docs` |
+
+## License
+
+The code, ontology, fictional case texts, and illustration are available under the [MIT License](LICENSE).

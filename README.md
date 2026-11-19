@@ -2,6 +2,8 @@
 
 **[Play the hosted casebook](https://marouaneoa.github.io/On-Second-Read/)**
 
+Start with the library practice excerpt. Choose a phrase, reveal the ontology links, and compare your choice with the worked Codex answer or a live model. Saved comparisons and reflections stay in your browser.
+
 Choose a case and open **Explore ontology** to navigate classes or case-specific evidence. The **LLM workbench** can send a dossier directly from your browser to a provider using your personal key, or inspect a JSON response pasted from another model. The browser compares proposed wording with the original review and resolves passage IDs. Assess the meaning of each citation yourself.
 
 A playable evidence casebook and a local LLM annotation studio. Investigate the authored cases below, or [extract and review a graph from your own dossier](#annotation-studio).

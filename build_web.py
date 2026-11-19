@@ -63,7 +63,7 @@ def build():
     web = ROOT / 'web'
     data = dict(schema=SCHEMA, ontology=(ROOT/"ontology/review.ttl").read_text(), cases=[compile_case(c) for c in CASES], queries=[q.read_text() for q in QUERIES])
     template = (web/'template.html').read_text()
-    html = template.replace('/* STYLE */', (web/'style.css').read_text()).replace('/* APP */', (web/'tools.js').read_text() + '\n' + (web/'app.js').read_text()).replace('/* DATA */', json.dumps(data).replace('<',r'\u003c'))
+    html = template.replace('/* STYLE */', (web/'style.css').read_text()).replace('/* APP */', (web/'tools.js').read_text() + '\n' + (web/'app.js').read_text() + '\n' + (web/'practice.js').read_text()).replace('/* DATA */', json.dumps(data).replace('<',r'\u003c'))
     (ROOT/'docs/index.html').write_text(html)
 
 

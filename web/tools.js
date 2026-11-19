@@ -67,6 +67,16 @@ function mountWorkbench(c){
     const name=provider.value,key=secret.value.trim(),id=model.value.trim();
     if(!key||!id){status.textContent=' Enter a model and a key for '+name+'.';return;}
     const btn=q('.run');btn.disabled=true;provider.disabled=true;status.textContent=' Extracting…';secret.value='';
+    const panel=btn.closest('section'), currentReply=reply;
+    try{
+      const text=await requestModel(name,key,id,system,dossier,schema);
+      if(panel.contains(currentReply)){currentReply.value=text;inspect();status.textContent=' Response received.';}
+    }catch(e){status.textContent=' '+e.message+' You can also use the prompt and paste a response.';}
+    finally{btn.disabled=false;provider.disabled=false;}
+  };
+}
+
+async function requestModel(name,key,id,system,dossier,schema){
     let url,body,headers={'Content-Type':'application/json'};
     if(name==='Gemini'){
       url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(id)+':generateContent';headers['x-goog-api-key']=key;
@@ -76,15 +86,12 @@ function mountWorkbench(c){
       headers.Authorization='Bearer '+key;body={model:id,messages:[{role:'system',content:system},{role:'user',content:dossier}],response_format:{type:'json_schema',json_schema:{name:'judgments',strict:true,schema}}};
       if(name==='OpenRouter')body.provider={require_parameters:true};
     }
-    const panel=btn.closest('section'), currentReply=reply;
-    try{
+
+
       const res=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),redirect:'error',credentials:'omit',signal:AbortSignal.timeout(120000)});
       if(!res.ok)throw Error('HTTP '+res.status+'. Check key, model access and quota.');
       const data=await res.json();
       const text=name==='Gemini'?data.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text).join(''):data.choices?.[0]?.message?.content;
       if(!text)throw Error('Provider returned no judgment text.');
-      if(panel.contains(currentReply)){currentReply.value=text;inspect();status.textContent=' Response received.';}
-    }catch(e){status.textContent=' '+e.message+' You can also use the prompt and paste a response.';}
-    finally{btn.disabled=false;provider.disabled=false;}
-  };
+    return text;
 }

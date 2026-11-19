@@ -13,10 +13,15 @@
 <p class="sheet-head">Practice excerpt <span>Library desk</span></p>
 <h2 id="margin-title">Read the margin</h2>
 <blockquote>“The visitor <mark>found the returns desk</mark> using the new signs, <mark>without asking for help.</mark>”</blockquote>
-<p class="pencil">What does this sentence let you say?</p>
-<details><summary>See a worked interpretation</summary><p>The panel wanted to know whether the directions were clear. This visitor finding the desk unaided supports that judgment. To say the signs work for everyone, we would need more observations.</p></details>
+<fieldset id="practice-choices"><legend>Which words show that the visitor found their way independently?</legend><button data-pick="0">found the returns desk</button> <button data-pick="1">without asking for help</button></fieldset>
+<div id="practice-result" aria-live="polite"></div>
 </div></aside>
 </section>
+<section class="panel practice-lab" id="practice-lab" hidden><h2>Compare your reading with a model</h2><p>Both readers get the same excerpt and question. Your selection stays out of the model prompt.</p>
+<label>Model answer<select id="practice-source"><option value="example">Worked example · Codex</option><option>OpenRouter</option><option>Gemini</option><option>OpenAI</option></select></label>
+<div class="controls" id="practice-live" hidden><label>Model<input id="practice-model"></label><label>Personal API key<input type="password" autocomplete="off" id="practice-key"></label><small>The excerpt and key go directly to the selected provider. Usage is billed to your account.</small></div>
+<button id="practice-compare">Reveal comparison</button><p id="practice-status" role="status"></p>
+<div id="practice-pair"></div><form id="practice-note" hidden><label>Would choosing the other phrase change what you could conclude? Explain in your own words.<textarea required maxlength="3000" name="reflection"></textarea></label><button>Save both readings and my explanation</button></form><details id="practice-history"><summary>Saved comparisons on this device</summary><div></div></details></section>
 <section class="reader-guide" aria-labelledby="how-title"><div><p class="kicker">Reader’s guide</p><h2 id="how-title">How to read a case</h2></div>
 <ol><li><strong>Find the promise.</strong> Read the published rubric. It tells you what the panel agreed to assess. Each standard, such as clear instructions, is a <em>criterion</em>.</li>
 <li><strong>Trace the judgment.</strong> Read both reviews. Match each claim to a sentence in the dossier. Ask whether the reviewers used different evidence or expected different things.</li>

@@ -36,7 +36,8 @@ def examples():
                    for r in sorted(g.subjects(RDF.type, OS.Review))}
         trace = results(g, QUERIES[0])[1]
         gold = [dict(reviewer=r, criterion=c, passage=p, wording=reviews[r]) for r,c,p,_,_ in trace]
-        output.append(dict(title=str(g.value(ns.case, RDFS.label)), rubric=[str(g.value(ns.criterion, RDFS.label))],
+        guide = json.loads((case/"guide.json").read_text())
+        output.append(dict(context=guide["context"], rubricExplanation=guide["rule"], title=str(g.value(ns.case, RDFS.label)), rubric=[str(g.value(ns.criterion, RDFS.label))],
                            passages=passages, reviews=reviews, gold=gold))
     return output
 
@@ -50,7 +51,7 @@ def validate_doc(d):
         mapping = d.get(field)
         if not isinstance(mapping,dict) or not mapping or not all(k.strip() and isinstance(v,str) and v.strip() for k,v in mapping.items()):
             raise ValueError(f"{field} must map IDs or names to source text.")
-    return {k:d[k] for k in ("title","rubric","passages","reviews")}
+    return {k:d[k] for k in ("title","context","rubric","rubricExplanation","passages","reviews") if k in d}
 
 
 def extract(d, provider="ollama"):

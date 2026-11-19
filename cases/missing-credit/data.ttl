@@ -13,22 +13,22 @@
     rdfs:label "Dossier cover" .
 
 :p1 a owl:NamedIndividual, os:Passage ;
-    rdfs:label "Cover credit" ; os:partOf :d1 ; os:quote "Project lead: Sam Reed." .
+    rdfs:label "Dossier cover excerpt" ; os:partOf :d1 ; os:quote "Saturday delivery team. Project lead: Sam Reed. The funder asked for one contact for questions about expenses, so this cover sheet names one person. The team delivered eighteen boxes before noon. The space beneath the contact name lists the total cost and the number of households served." .
 
 :d2 a owl:NamedIndividual, os:Document ;
     rdfs:label "Project diary" .
 
 :p2 a owl:NamedIndividual, os:Passage ;
-    rdfs:label "Team diary" ; os:partOf :d2 ; os:quote "Sam coordinated two volunteers, assigned shifts and resolved a missed handoff." .
+    rdfs:label "Project diary excerpt" ; os:partOf :d2 ; os:quote "At eight, Sam gave Jo the route list and asked Eli to check the boxes against it. When a driver missed the handoff, both volunteers started calling the same households. Sam stopped the duplicate calls, reassigned Eli to the loading bay and stayed with Jo until each household had a new delivery time." .
 
 :reviewA a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer A" ; os:containsJudgment :jA .
 
 :jA a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment A" ; os:wording "The cover names a lead but gives no example of delegation." ; os:cites :p1 ; os:appliesCriterion :criterion .
+    rdfs:label "Judgment A" ; os:wording "The cover gives me someone to contact and tells me the delivery finished. I can see that Sam was named lead. I would leave the delegation box open because this page never tells me what Sam asked another person to do." ; os:cites :p1 ; os:appliesCriterion :criterion .
 
 :reviewB a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer B" ; os:containsJudgment :jB .
 
 :jB a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment B" ; os:wording "The diary shows how Sam delegated and followed up." ; os:cites :p2 ; os:appliesCriterion :criterion .
+    rdfs:label "Judgment B" ; os:wording "I can fill in the delegation box from the diary. Sam assigned two different jobs, noticed that people were duplicating work and changed one assignment. Those are observable decisions about the team." ; os:cites :p2 ; os:appliesCriterion :criterion .

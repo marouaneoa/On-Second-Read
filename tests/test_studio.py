@@ -10,7 +10,7 @@ from evaluate import evaluate, first_link
 
 class StudioTests(unittest.TestCase):
     def test_authored_cases_roundtrip(self):
-        for case, pattern in zip(examples(), (1,2,3)):
+        for case, pattern in zip(examples(), (1,2,3,1,2)):
             result = analyze(case,case["gold"],"Reviewed fixture")
             self.assertEqual([bool(f["rows"]) for f in result["findings"]],[True]+[i==pattern for i in (1,2,3)])
             graph=Graph().parse(data=result["turtle"],format="turtle")
@@ -33,7 +33,7 @@ class StudioTests(unittest.TestCase):
             self.assertIn("os:appliesCriterion",request["messages"][0]["content"])
 
     def test_baseline(self):
-        self.assertAlmostEqual(evaluate(first_link)["micro_f1"],4/6)
+        self.assertAlmostEqual(evaluate(first_link)["micro_f1"],6/10)
 
     def test_hosted_extraction(self):
         case = examples()[0]

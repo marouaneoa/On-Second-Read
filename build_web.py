@@ -37,7 +37,7 @@ def compile_case(folder):
             graph.set((ns.jB, OS.cites, passage))
             graph.set((ns.jB, OS.appliesCriterion, criterion))
             variants[f"{value(passage)}|{value(criterion)}"] = [results(graph, q)[1] for q in QUERIES]
-    return dict(id=folder.name, title=label(ns.case), rubric=label(ns.criterion),
+    return dict(guide=json.loads((folder/"guide.json").read_text()), id=folder.name, title=label(ns.case), rubric=label(ns.criterion),
                 reviews=[field(j, OS.wording) for j in (ns.jA, ns.jB)],
                 passages={value(p):dict(source=label(graph.value(p, OS.partOf)), text=field(p, OS.quote), original=p in actual) for p in passages},
                 criteria={value(c):label(c) for c in criteria}, base=base, answer=matches[0],

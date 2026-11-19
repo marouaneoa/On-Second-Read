@@ -1,0 +1,16 @@
+{
+  "context": "Ravi applies for a museum visitor-services job. The practical exercise asks candidates to write directions for a visitor who has never used the ticket machine. The panel receives a short observation from the trial. One reviewer asks whether a visitor could complete the task. The other is interested in how Ravi learned to write.",
+  "rule": "Clear instructions means a first-time visitor can collect a ticket without help. The exercise has one published criterion. The application materials do not request a particular degree.",
+  "walk": "Both reviewers read the same trial. A asks whether the visitor succeeded unaided, exactly the test the panel published. B moves from the visitor’s performance to Ravi’s formal qualification. Publishing a degree requirement would change the exercise. The file gives no basis for assuming that Ravi has, or lacks, that degree.",
+  "brief": [
+    "What is the visitor trial meant to establish?",
+    "Which question introduces a new standard?",
+    [
+      "Could the visitor collect the ticket?",
+      "Did the observer supply a hint?",
+      "Does Ravi hold a technical-writing degree?"
+    ],
+    2,
+    "A degree is an additional requirement."
+  ]
+}

@@ -10,6 +10,14 @@ class CasebookTests(unittest.TestCase):
         # outside rubric, shared reasoning. Trace expectations identify the
         # reviewer, criterion, cited passage and document.
         expected = {
+            "the-night-shift": (
+                [("Reviewer A", "Safe handover", "p1", "Outgoing shift message"),
+                 ("Reviewer B", "Safe handover", "p2", "Morning receipt")],
+                [["jA", "jB"]], [], []),
+            "whose-words": (
+                [("Reviewer A", "Clear instructions", "p1", "Visitor trial"),
+                 ("Reviewer B", "Technical-writing degree", "p1", "Visitor trial")],
+                [], [["jB", "extra"]], []),
             "missing-credit": (
                 [("Reviewer A", "Leadership", "p1", "Dossier cover"),
                  ("Reviewer B", "Leadership", "p2", "Project diary")],

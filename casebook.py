@@ -1,5 +1,6 @@
 """Reproduce the evidence tables from one dossier at a time."""
 import argparse
+import json
 from pathlib import Path
 
 from rdflib import Graph, URIRef
@@ -28,6 +29,8 @@ def results(graph, query):
 def reveal(case):
     graph = load(case)
     parts = ["<details>", "<summary>Reveal the evidence</summary>"]
+    guide = json.loads((case / "guide.json").read_text())
+    parts.extend(["### How to read the evidence", guide["walk"]])
     for query in QUERIES:
         columns, rows = results(graph, query)
         parts.append(f"[{query.stem}](../../queries/{query.name})")

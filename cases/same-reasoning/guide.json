@@ -1,0 +1,5 @@
+{
+  "context": "Noor maintains software for a library. Returning the same book twice used to remove a second, unrelated loan from the reader’s account. Noor submitted a fix. Two reviewers on a hiring panel read the release notebook to decide whether Noor checked the change carefully enough. One reviewer writes like a developer and the other writes for library staff.",
+  "rule": "Verification means recreating the original failure and recording what happens after the repair. In this case a replay means repeating the same sequence of actions with a test account.",
+  "walk": "Translate “regression test” into the library scene: try the mistaken return again and check the other book. That is exactly the check the second reviewer describes. Both judgments point to the same notebook entry and the same verification requirement. You can establish that overlap even though the reviewers use different words. Their overall hiring recommendations remain unknown."
+}

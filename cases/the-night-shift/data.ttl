@@ -1,0 +1,34 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <https://example.org/on-second-read/the-night-shift#> .
+
+:case a owl:NamedIndividual, os:Case ;
+    rdfs:label "The night shift" ; os:listsCriterion :criterion ; os:hasReview :reviewA, :reviewB .
+
+:criterion a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Safe handover" .
+
+:d1 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Outgoing shift message" .
+
+:p1 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Outgoing shift message excerpt" ; os:partOf :d1 ; os:quote "I placed a red tag on lamp four and switched its circuit off. My message to the morning crew said to leave that lamp isolated until someone tested the cable. I sent the message to the shared shift phone at midnight. I left the line for the receiving technician’s name blank because nobody had arrived." .
+
+:d2 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Morning receipt" .
+
+:p2 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Morning receipt excerpt" ; os:partOf :d2 ; os:quote "At six I read Leila’s message on the shift phone. I called her and repeated the lamp number and the instruction to leave its power off. She confirmed both details. I entered my name as the person responsible for testing the cable and told the stage manager to use lamp five instead." .
+
+:reviewA a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer A" ; os:containsJudgment :jA .
+
+:jA a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment A" ; os:wording "From the outgoing message I know Leila identified the hazard. The empty name line leaves me wondering whether anybody actually took over. I would ask for a receipt before giving full credit for the handover." ; os:cites :p1 ; os:appliesCriterion :criterion .
+
+:reviewB a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer B" ; os:containsJudgment :jB .
+
+:jB a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment B" ; os:wording "The morning receipt closes that gap for me. The technician repeated the instruction to Leila and signed for the cable test. I can identify the person who accepted responsibility and the equipment they discussed." ; os:cites :p2 ; os:appliesCriterion :criterion .

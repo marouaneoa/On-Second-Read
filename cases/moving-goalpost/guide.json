@@ -1,0 +1,5 @@
+{
+  "context": "Alex is interviewing to run small software releases for a community clinic. Before seeing any applications, the panel wrote down what would count as success in this exercise. The chair now asks two reviewers to evaluate a booking-system launch. Alex has supplied the same signed launch report to both of them.",
+  "rule": "Delivery means getting the agreed service into use by the promised date. For this exercise that is the complete published requirement.",
+  "walk": "Follow both citations and you land on the same launch report. The difference appears when you ask what would satisfy each reviewer. A wants evidence of a working service by Friday and finds it. B wants a previous management position. Even a perfectly delivered release could fail that second test. The published rubric gives the panel grounds to ask B to justify introducing it."
+}

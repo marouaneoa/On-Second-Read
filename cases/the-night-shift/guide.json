@@ -1,0 +1,16 @@
+{
+  "context": "Leila is applying to supervise evening maintenance at a theatre. An evening supervisor sometimes leaves before the morning crew arrives, so a repair may cross two shifts. The panel asks how Leila handled a faulty light above the stage. The file includes a message written at midnight and a record completed by the incoming technician.",
+  "rule": "A safe handover requires the next worker to know which equipment is unsafe and who will take responsibility. Look for what the outgoing worker communicated and what the incoming worker understood.",
+  "walk": "Put the two records in time order. At midnight the blank line genuinely leaves a question. At six the named technician answers it. The reviewers are using the same safety requirement at different points along the paper trail. An unanswered question in the earlier record is compatible with a completed handover in the later one.",
+  "brief": [
+    "Did someone actually accept the handover?",
+    "Which detail resolves the first reviewer’s question?",
+    [
+      "The red tag had a colour.",
+      "The next technician repeated the instruction and signed for the test.",
+      "The theatre had a spare lamp."
+    ],
+    1,
+    "The receipt records acceptance."
+  ]
+}

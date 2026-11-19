@@ -10,10 +10,12 @@ Read both reviews, commit to a finding and a supporting reason, then inspect the
 
 [Play the Markdown edition on GitHub](cases/missing-credit/README.md)
 
-| Next case | Your question |
+| Case | Your question |
 | --- | --- |
 | [The moving goalpost](cases/moving-goalpost/README.md) | Where did a new requirement enter the decision? |
 | [Different words, same reasoning](cases/same-reasoning/README.md) | How much does the wording change the evidence trail? |
+| [The night shift](cases/the-night-shift/README.md) | Did anyone accept responsibility for the faulty stage light? |
+| [Whose words count?](cases/whose-words/README.md) | What does a visitor collecting a ticket tell us about the writer? |
 
 Read the dossier and both reviews, make a prediction, then expand the reveal. Every row comes from a query you can inspect. These original fictional cases explore consistency in hiring reviews. They support questions about the documented reasoning. Establishing a reviewer’s intent requires additional evidence.
 
@@ -40,7 +42,7 @@ python -m pip install -r requirements.txt
 python casebook.py missing-credit
 ```
 
-Run `python casebook.py all --write` to refresh the three Markdown reveals. Run `python -m unittest discover -s tests -v` to check the expected answers and try a citation change in memory.
+Run `python casebook.py all --write` to refresh the five Markdown reveals. Run `python -m unittest discover -s tests -v` to check the expected answers and try a citation change in memory.
 
 ## Reading the results
 
@@ -88,7 +90,7 @@ python evaluate.py
 python evaluate.py --live > evaluation.json
 ```
 
-The first command runs a deterministic baseline that assigns the first rubric criterion and first passage to every review. It matches **4 of 6** authored judgments. The second compares the configured Ollama model against the same references. Each judgment is scored as an exact tuple of reviewer, excerpt, criterion and passage ID. The JSON reports per-case matches, extras and omissions plus micro precision, recall and F1. A synonymous criterion label or shorter accurate excerpt can therefore count as a miss. These six examples are a debugging benchmark. To estimate generalization, author independent cases and keep their labels out of prompt development.
+The first command runs a deterministic baseline that assigns the first rubric criterion and first passage to every review. It matches **6 of 10** authored judgments. The second compares the configured Ollama model against the same references. Each judgment is scored as an exact tuple of reviewer, excerpt, criterion and passage ID. The JSON reports per-case matches, extras and omissions plus micro precision, recall and F1. A synonymous criterion label or shorter accurate excerpt can therefore count as a miss. These ten judgments are a debugging benchmark. To estimate generalization, author independent cases and keep their labels out of prompt development.
 
 ### Use an OpenAI API key
 
@@ -102,7 +104,7 @@ python studio.py
 
 Restart any existing studio process first so it receives the environment variable. At **http://127.0.0.1:8765**, choose **Hosted · OpenAI API** and click **Propose judgments**. This sends the dossier and ontology to OpenAI and uses your account’s API credit. The Python server reads the key from its environment. To select a different model that supports strict JSON Schema, set `OSR_OPENAI_MODEL` before startup (default `gpt-4o-mini`).
 
-For the three-case benchmark, run `python evaluate.py --live --provider openai` with the same environment. Local Ollama remains the default.
+For the five-case benchmark, run `python evaluate.py --live --provider openai` with the same environment. Local Ollama remains the default.
 
 ### Use OpenRouter or Google Gemini
 

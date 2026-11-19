@@ -13,16 +13,16 @@
     rdfs:label "Release notebook" .
 
 :p1 a owl:NamedIndividual, os:Passage ;
-    rdfs:label "Test log" ; os:partOf :d1 ; os:quote "Before shipping, Noor replayed the incident against the patch and recorded a passing regression test." .
+    rdfs:label "Release notebook excerpt" ; os:partOf :d1 ; os:quote "I made a test account with two books on loan. On the old version I returned the first book twice. Both loans disappeared. I repeated those exact steps with the fix installed. The second book stayed on the account. I saved the steps as a regression test, a check we can run again after future changes." .
 
 :reviewA a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer A" ; os:containsJudgment :jA .
 
 :jA a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment A" ; os:wording "The recorded replay verifies the fix." ; os:cites :p1 ; os:appliesCriterion :criterion .
+    rdfs:label "Judgment A" ; os:wording "The recorded replay verifies the fix. Noor first reproduced the loss of the second loan and then showed that the regression test passed on the repaired version. I can follow the sequence in the notebook." ; os:cites :p1 ; os:appliesCriterion :criterion .
 
 :reviewB a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer B" ; os:containsJudgment :jB .
 
 :jB a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment B" ; os:wording "Noor checked that the incident could no longer be reproduced." ; os:cites :p1 ; os:appliesCriterion :criterion .
+    rdfs:label "Judgment B" ; os:wording "I wanted to know whether the other book would still be there after a mistaken second return. Noor tried that very mistake before and after the repair and wrote down both results. That answers my verification question." ; os:cites :p1 ; os:appliesCriterion :criterion .

@@ -16,16 +16,16 @@
     rdfs:label "Launch report" .
 
 :p1 a owl:NamedIndividual, os:Passage ;
-    rdfs:label "Launch note" ; os:partOf :d1 ; os:quote "Alex delivered the booking service by the agreed deadline with two colleagues." .
+    rdfs:label "Launch report excerpt" ; os:partOf :d1 ; os:quote "The clinic and Alex agreed that reception staff would be able to book and cancel visits by Friday afternoon. Alex split the work with two colleagues. On Thursday reception tried both tasks with sample appointments. On Friday at noon the clinic manager signed off and staff began using the service. The report lists everyone as a project contributor." .
 
 :reviewA a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer A" ; os:containsJudgment :jA .
 
 :jA a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment A" ; os:wording "This release meets our delivery criterion." ; os:cites :p1 ; os:appliesCriterion :criterion .
+    rdfs:label "Judgment A" ; os:wording "I checked the promise at the top of the report against the sign-off at the bottom. Staff could perform both tasks on Friday. That gives me a concrete reason to credit Alex for delivery." ; os:cites :p1 ; os:appliesCriterion :criterion .
 
 :reviewB a owl:NamedIndividual, os:Review ;
     rdfs:label "Reviewer B" ; os:containsJudgment :jB .
 
 :jB a owl:NamedIndividual, os:Judgment ;
-    rdfs:label "Judgment B" ; os:wording "This release does not establish that Alex has held a management position." ; os:cites :p1 ; os:appliesCriterion :extra .
+    rdfs:label "Judgment B" ; os:wording "The report shows three contributors but never says anyone reported to Alex. Before I award a positive assessment, I want evidence that Alex previously held a management position with direct reports." ; os:cites :p1 ; os:appliesCriterion :extra .

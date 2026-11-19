@@ -1,0 +1,31 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <https://example.org/on-second-read/whose-words#> .
+
+:case a owl:NamedIndividual, os:Case ;
+    rdfs:label "Whose words count?" ; os:listsCriterion :criterion ; os:hasReview :reviewA, :reviewB .
+
+:criterion a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Clear instructions" .
+
+:extra a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Technical-writing degree" .
+
+:d1 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Visitor trial" .
+
+:p1 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Visitor trial excerpt" ; os:partOf :d1 ; os:quote "A visitor who had never used this machine read Ravi’s card. It said to select a language, tap Collect booking and enter the six digits on the confirmation slip. The visitor followed the three steps, collected the ticket and joined the entrance queue. The observer stayed behind the marked line and gave no prompts." .
+
+:reviewA a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer A" ; os:containsJudgment :jA .
+
+:jA a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment A" ; os:wording "I watched for the moment the visitor might need a hint. The observer records that there were no prompts. The visitor got the ticket, so I have direct evidence that these instructions were clear enough for this task." ; os:cites :p1 ; os:appliesCriterion :criterion .
+
+:reviewB a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer B" ; os:containsJudgment :jB .
+
+:jB a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment B" ; os:wording "The trial tells me that this visitor succeeded. Before I give credit, I would also want a degree in technical writing. A single successful visit cannot tell me where Ravi learned to produce instructions." ; os:cites :p1 ; os:appliesCriterion :extra .

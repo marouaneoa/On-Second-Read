@@ -2,7 +2,11 @@
 
 Two reviewers assess the same portfolio. One reads the cover credit. The other reads the team diary. Before you open their evidence table, can you tell which conclusion you would revisit?
 
-**[Play The missing credit →](cases/missing-credit/README.md)**
+**[Download the playable browser edition](https://github.com/marouaneoa/On-Second-Read/raw/refs/heads/main/docs/index.html)** · Open the downloaded HTML file in your browser. It works offline.
+
+Read both reviews, commit to a finding and a supporting reason, then inspect the source trace. In the evidence lab, change Reviewer B’s citation or criterion to see which SPARQL results appear or disappear. Progress is saved in your browser when storage is available.
+
+[Play the Markdown edition on GitHub](cases/missing-credit/README.md)
 
 | Next case | Your question |
 | --- | --- |
@@ -43,3 +47,7 @@ The [four SPARQL queries](queries/) trace sources, compare citations under a sha
 For a reader check, pick a judgment and locate its exact quotation in the dossier. What could you conclude from the case, and what would you still need to know?
 
 Code, ontology, case texts and illustration are available under the [MIT License](LICENSE).
+
+## Build the browser edition
+
+Run `python build_web.py` after editing the RDF, queries or files in `web/`. The builder runs all four SPARQL queries against each supported citation/criterion combination and embeds the results in `docs/index.html`. Hypothetical edits apply to Reviewer B’s recorded links. Their original statement stays visible for comparison. Browser play requires no Python or server. To serve the artifact over HTTP locally, run `python -m http.server 8000 --directory docs` and open `http://localhost:8000`.

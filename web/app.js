@@ -18,9 +18,16 @@ function choices(name, items, offset){
   return items.map((text,i)=>`<label class="choice"><input required type="radio" name="${name}" value="${i+offset}">${esc(text)}</label>`).join('');
 }
 function openCase(){
-  current = cases.find(c => c.id === location.hash.slice(1)) || cases[0];
+  current = cases.find(c => c.id === location.hash.slice(1));
+  document.querySelector('#welcome').hidden=Boolean(current);
+  document.querySelector('#investigation').hidden=!current;
+  document.querySelector('#progress').textContent=cases.filter(valid).length+' / '+cases.length+' cases reviewed';
+  document.title=current ? current.title+' · On Second Read' : 'On Second Read · A field guide to evidence';
+  if(!current){
+    document.querySelector('#contents-list').innerHTML=cases.map((c,i)=>`<a href="#${c.id}"><span class="folio">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(c.title)}</strong><small>${esc((c.guide.brief||briefs[c.id])[0])}</small></span><span aria-hidden="true">↗</span></a>`).join('');
+    return;
+  }
   const c=current, brief=c.guide.brief || briefs[c.id], done=valid(c);
-  document.querySelector('#progress').textContent = cases.filter(valid).length+' / '+cases.length+' cases reviewed';
   nav.innerHTML = cases.map(item=>`<button aria-current="${item.id===c.id}" data-case="${item.id}">${valid(item)?'✓ ':''}${esc(item.title)}</button>`).join('');
   const baseline=c.variants[c.base.join('|')][0];
   desk.innerHTML=`<section class="intro"><div class="meta">Case file · ${esc(c.rubric)}</div><h1>${esc(c.title)}</h1><p>${esc(c.guide.context)}</p><p><strong>${esc(brief[0])}</strong></p></section>
@@ -71,5 +78,5 @@ function showLab(c){
   update();
 }
 nav.onclick=e=>{if(e.target.dataset.case)location.hash=e.target.dataset.case;};
-window.addEventListener('hashchange',openCase);
+window.addEventListener('hashchange',()=>{openCase();window.scrollTo(0,0);const heading=document.querySelector(current?'#desk h1':'#welcome-title');heading.tabIndex=-1;heading.focus({preventScroll:true});});
 openCase();

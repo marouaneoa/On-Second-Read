@@ -24,6 +24,16 @@ function openCase(){
   document.querySelector('#investigation').hidden=!current;
   document.querySelector('#progress').textContent=cases.filter(valid).length+' / '+cases.length+' cases reviewed';
   document.title=current ? current.title+' · On Second Read' : 'On Second Read · A field guide to evidence';
+  const mission=document.querySelector('#mission');
+  mission.replaceChildren();
+  mission.hidden=true;
+  if(['#request-a-document','#repair-the-rubric'].includes(location.hash)){
+    document.querySelector('#welcome').hidden=true; mission.hidden=false;
+    if(location.hash==='#request-a-document')documentMission(mission);
+    else repairMission(mission);
+    document.title=mission.querySelector('h1').textContent+' · On Second Read';
+    return;
+  }
   if(!current){
     document.querySelector('#contents-list').innerHTML=cases.map((c,i)=>`<a href="#${c.id}"><span class="folio">${String(i+1).padStart(2,'0')}</span><span><strong>${esc(c.title)}</strong><small>${esc((c.guide.brief||briefs[c.id])[0])}</small></span><span aria-hidden="true">↗</span></a>`).join('');
     return;
@@ -36,6 +46,12 @@ function openCase(){
   ${Object.entries(c.passages).filter(([,p])=>p.original).map(([id,p])=>`<div class="note"><small>${esc(id)} / ${esc(p.source)}</small><p>${esc(p.text)}</p></div>`).join('')}</section>
   <section class="panel"><h2>Panel notes</h2>${c.reviews.map((w,i)=>`<div class="note"><small>${esc(baseline[i][0])} · cites ${esc(baseline[i][2])}</small><p>“${esc(w)}”</p></div>`).join('')}</section></div>
   <section class="panel" id="decision"><h2>Your assessment</h2><p>First ask what each reviewer wanted to see. Then check which passage each one used. A criterion is the standard they applied. A citation points to the passage they relied on.</p>${done?feedback(c):`<form><fieldset><legend>Which pattern connects the reviews?</legend>${choices('pattern',labels.slice(1),1)}</fieldset><fieldset><legend>${esc(brief[1])}</legend>${choices('reason',brief[2],0)}</fieldset><button class="primary">Check my reasoning</button></form>`}</section>${done?'<section class="panel" id="lab"></section>':''}`;
+  if(c.id==='missing-credit'||c.id==='moving-goalpost'){
+    const link=document.createElement('a');
+    link.href=c.id==='missing-credit'?'#request-a-document':'#repair-the-rubric';
+    link.textContent=c.id==='missing-credit'?'Play the document-request investigation':'Try the rubric repair puzzle';
+    desk.querySelector('.intro').append(link);
+  }
   mountTools(c);
   const form=desk.querySelector('form');
   if(form) form.onsubmit=e=>{e.preventDefault(); const values=new FormData(form);saved[c.id]=['pattern','reason'].map(k=>Number(values.get(k)));store();openCase();desk.querySelector('#decision').scrollIntoView();};
@@ -79,5 +95,5 @@ function showLab(c){
   update();
 }
 nav.onclick=e=>{if(e.target.dataset.case)location.hash=e.target.dataset.case;};
-window.addEventListener('hashchange',()=>{openCase();window.scrollTo(0,0);const heading=document.querySelector(current?'#desk h1':'#welcome-title');heading.tabIndex=-1;heading.focus({preventScroll:true});});
+window.addEventListener('hashchange',()=>{openCase();window.scrollTo(0,0);const heading=document.querySelector(current?'#desk h1':document.querySelector('#mission').hidden?'#welcome-title':'#mission h1');heading.tabIndex=-1;heading.focus({preventScroll:true});});
 openCase();

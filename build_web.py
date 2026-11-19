@@ -59,11 +59,28 @@ def compile_case(folder):
                 turtle=(folder/'data.ttl').read_text())
 
 
+def compile_repair():
+    case = next(c for c in CASES if c.name == "moving-goalpost")
+    graph = load(case)
+    ns = Namespace("https://example.org/on-second-read/moving-goalpost#")
+    false_edge = (ns.case, OS.listsCriterion, ns.extra)
+    graph.add(false_edge)
+    query = ROOT / "queries/03-outside-rubric.rq"
+    puzzle = {"before": results(graph, query)[1], "edits": []}
+    for edge in [(ns.jB, OS.appliesCriterion, ns.extra), false_edge,
+                 (ns.case, OS.listsCriterion, ns.criterion)]:
+        graph.remove(edge)
+        puzzle["edits"].append({"triple": [value(x) for x in edge],
+                                "rows": results(graph, query)[1]})
+        graph.add(edge)
+    return puzzle
+
+
 def build():
     web = ROOT / 'web'
-    data = dict(schema=SCHEMA, ontology=(ROOT/"ontology/review.ttl").read_text(), cases=[compile_case(c) for c in CASES], queries=[q.read_text() for q in QUERIES])
+    data = dict(repair=compile_repair(), schema=SCHEMA, ontology=(ROOT/"ontology/review.ttl").read_text(), cases=[compile_case(c) for c in CASES], queries=[q.read_text() for q in QUERIES])
     template = (web/'template.html').read_text()
-    html = template.replace('/* STYLE */', (web/'style.css').read_text()).replace('/* APP */', (web/'tools.js').read_text() + '\n' + (web/'app.js').read_text() + '\n' + (web/'practice.js').read_text()).replace('/* DATA */', json.dumps(data).replace('<',r'\u003c'))
+    html = template.replace('/* STYLE */', (web/'style.css').read_text()).replace('/* APP */', (web/'tools.js').read_text() + '\n' + (web/'missions.js').read_text() + '\n' + (web/'app.js').read_text() + '\n' + (web/'practice.js').read_text()).replace('/* DATA */', json.dumps(data).replace('<',r'\u003c'))
     (ROOT/'docs/index.html').write_text(html)
 
 

@@ -1,5 +1,9 @@
 # On Second Read
 
+**[Play the hosted casebook](https://marouaneoa.github.io/On-Second-Read/)**
+
+Choose a case and open **Explore ontology** to navigate classes or case-specific evidence. The **LLM workbench** can send a dossier directly from your browser to a provider using your personal key, or inspect a JSON response pasted from another model. The browser compares proposed wording with the original review and resolves passage IDs. Assess the meaning of each citation yourself.
+
 A playable evidence casebook and a local LLM annotation studio. Investigate the authored cases below, or [extract and review a graph from your own dossier](#annotation-studio).
 
 Two reviewers assess the same portfolio. One reads the cover credit. The other reads the team diary. Before you open their evidence table, can you tell which conclusion you would revisit?

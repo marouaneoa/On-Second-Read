@@ -28,6 +28,7 @@ function openCase(){
   ${Object.entries(c.passages).filter(([,p])=>p.original).map(([id,p])=>`<div class="note"><small>${esc(id)} / ${esc(p.source)}</small><p>${esc(p.text)}</p></div>`).join('')}</section>
   <section class="panel"><h2>Panel notes</h2>${c.reviews.map((w,i)=>`<div class="note"><small>${esc(baseline[i][0])} · cites ${esc(baseline[i][2])}</small><p>“${esc(w)}”</p></div>`).join('')}</section></div>
   <section class="panel" id="decision"><h2>Your assessment</h2><p>First ask what each reviewer wanted to see. Then check which passage each one used. A criterion is the standard they applied. A citation points to the passage they relied on.</p>${done?feedback(c):`<form><fieldset><legend>Which pattern connects the reviews?</legend>${choices('pattern',labels.slice(1),1)}</fieldset><fieldset><legend>${esc(brief[1])}</legend>${choices('reason',brief[2],0)}</fieldset><button class="primary">Check my reasoning</button></form>`}</section>${done?'<section class="panel" id="lab"></section>':''}`;
+  mountTools(c);
   const form=desk.querySelector('form');
   if(form) form.onsubmit=e=>{e.preventDefault(); const values=new FormData(form);saved[c.id]=['pattern','reason'].map(k=>Number(values.get(k)));store();openCase();desk.querySelector('#decision').scrollIntoView();};
   if(done){

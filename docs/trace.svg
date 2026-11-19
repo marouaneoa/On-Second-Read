@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="280" viewBox="0 0 820 280" role="img" aria-labelledby="title desc">
+<title id="title">The missing credit: one criterion, two sources</title><desc id="desc">Judgments A and B both apply leadership. A cites the cover, B cites the diary.</desc>
+<rect width="820" height="280" rx="16" fill="#f4f3ee"/>
+<g font-family="sans-serif" fill="#193232"><text x="28" y="39" font-size="22" font-weight="bold">Follow a judgment to its source</text>
+<text x="28" y="69">The missing credit · two reviewers, one leadership criterion</text>
+<g stroke="#497879" stroke-width="2" fill="none"><path d="M167 174 L307 124 M167 174 L307 224 M439 124 H608 M439 224 H608"/></g>
+<g fill="#d0e7da"><rect x="28" y="150" width="139" height="48" rx="8"/><rect x="307" y="100" width="132" height="48" rx="8"/><rect x="307" y="200" width="132" height="48" rx="8"/></g>
+<g fill="#f3dfbd"><rect x="608" y="100" width="182" height="48" rx="8"/><rect x="608" y="200" width="182" height="48" rx="8"/></g>
+<g text-anchor="middle"><text x="97" y="180">Leadership</text><text x="373" y="130">Judgment A</text><text x="373" y="230">Judgment B</text><text x="699" y="130">p1 · Cover credit</text><text x="699" y="230">p2 · Team diary</text><text x="227" y="128">applies</text><text x="227" y="227">applies</text><text x="520" y="115">cites</text><text x="520" y="215">cites</text></g></g></svg>

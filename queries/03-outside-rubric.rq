@@ -1,0 +1,7 @@
+PREFIX os: <https://example.org/on-second-read#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?judgment ?criterion WHERE {
+  ?case os:hasReview/os:containsJudgment ?judgment .
+  ?judgment os:appliesCriterion ?criterion .
+  FILTER NOT EXISTS { ?case os:listsCriterion ?criterion }
+} ORDER BY ?judgment

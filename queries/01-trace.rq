@@ -1,0 +1,8 @@
+PREFIX os: <https://example.org/on-second-read#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT ?reviewer ?criterion ?passage ?quote ?source WHERE {
+  ?case os:hasReview ?review .
+  ?review rdfs:label ?reviewer ; os:containsJudgment ?j .
+  ?j os:appliesCriterion/rdfs:label ?criterion ; os:cites ?passage .
+  ?passage os:quote ?quote ; os:partOf/rdfs:label ?source .
+} ORDER BY ?reviewer ?passage

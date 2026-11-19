@@ -1,0 +1,31 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <https://example.org/on-second-read/moving-goalpost#> .
+
+:case a owl:NamedIndividual, os:Case ;
+    rdfs:label "The moving goalpost" ; os:listsCriterion :criterion ; os:hasReview :reviewA, :reviewB .
+
+:criterion a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Delivery" .
+
+:extra a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Prior management experience" .
+
+:d1 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Launch report" .
+
+:p1 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Launch note" ; os:partOf :d1 ; os:quote "Alex delivered the booking service by the agreed deadline with two colleagues." .
+
+:reviewA a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer A" ; os:containsJudgment :jA .
+
+:jA a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment A" ; os:wording "This release meets our delivery criterion." ; os:cites :p1 ; os:appliesCriterion :criterion .
+
+:reviewB a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer B" ; os:containsJudgment :jB .
+
+:jB a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment B" ; os:wording "This release does not establish that Alex has held a management position." ; os:cites :p1 ; os:appliesCriterion :extra .

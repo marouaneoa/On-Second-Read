@@ -1,0 +1,34 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <https://example.org/on-second-read/missing-credit#> .
+
+:case a owl:NamedIndividual, os:Case ;
+    rdfs:label "The missing credit" ; os:listsCriterion :criterion ; os:hasReview :reviewA, :reviewB .
+
+:criterion a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Leadership" .
+
+:d1 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Dossier cover" .
+
+:p1 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Cover credit" ; os:partOf :d1 ; os:quote "Project lead: Sam Reed." .
+
+:d2 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Project diary" .
+
+:p2 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Team diary" ; os:partOf :d2 ; os:quote "Sam coordinated two volunteers, assigned shifts and resolved a missed handoff." .
+
+:reviewA a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer A" ; os:containsJudgment :jA .
+
+:jA a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment A" ; os:wording "The cover names a lead but gives no example of delegation." ; os:cites :p1 ; os:appliesCriterion :criterion .
+
+:reviewB a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer B" ; os:containsJudgment :jB .
+
+:jB a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment B" ; os:wording "The diary shows how Sam delegated and followed up." ; os:cites :p2 ; os:appliesCriterion :criterion .

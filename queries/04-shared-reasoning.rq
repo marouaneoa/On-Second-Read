@@ -1,0 +1,10 @@
+PREFIX os: <https://example.org/on-second-read#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?a ?b WHERE {
+  ?case os:hasReview ?ra, ?rb .
+  ?ra os:containsJudgment ?a .
+  ?rb os:containsJudgment ?b .
+  ?a os:appliesCriterion ?criterion ; os:cites ?pa ; os:wording ?wa .
+  ?b os:appliesCriterion ?criterion ; os:cites ?pb ; os:wording ?wb .
+  FILTER (STR(?ra) < STR(?rb) && ?pa = ?pb && ?wa != ?wb)
+} ORDER BY ?a ?b

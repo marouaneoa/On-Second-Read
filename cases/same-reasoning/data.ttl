@@ -1,0 +1,28 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix : <https://example.org/on-second-read/same-reasoning#> .
+
+:case a owl:NamedIndividual, os:Case ;
+    rdfs:label "Different words, same reasoning" ; os:listsCriterion :criterion ; os:hasReview :reviewA, :reviewB .
+
+:criterion a owl:NamedIndividual, os:Criterion ;
+    rdfs:label "Verification" .
+
+:d1 a owl:NamedIndividual, os:Document ;
+    rdfs:label "Release notebook" .
+
+:p1 a owl:NamedIndividual, os:Passage ;
+    rdfs:label "Test log" ; os:partOf :d1 ; os:quote "Before shipping, Noor replayed the incident against the patch and recorded a passing regression test." .
+
+:reviewA a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer A" ; os:containsJudgment :jA .
+
+:jA a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment A" ; os:wording "The recorded replay verifies the fix." ; os:cites :p1 ; os:appliesCriterion :criterion .
+
+:reviewB a owl:NamedIndividual, os:Review ;
+    rdfs:label "Reviewer B" ; os:containsJudgment :jB .
+
+:jB a owl:NamedIndividual, os:Judgment ;
+    rdfs:label "Judgment B" ; os:wording "Noor checked that the incident could no longer be reproduced." ; os:cites :p1 ; os:appliesCriterion :criterion .

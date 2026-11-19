@@ -1,0 +1,34 @@
+@prefix os: <https://example.org/on-second-read#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+
+<https://example.org/on-second-read> a owl:Ontology ; rdfs:label "On Second Read" .
+
+os:Case a owl:Class ; rdfs:comment "One authored hiring scenario with a complete rubric." .
+
+os:Review a owl:Class ; rdfs:comment "One reviewer’s evaluation within a case." .
+
+os:Judgment a owl:Class ; rdfs:comment "One assessment connecting a criterion to cited evidence." .
+
+os:Criterion a owl:Class ; rdfs:comment "A dimension on which work is evaluated." .
+
+os:Passage a owl:Class ; rdfs:comment "An identifiable excerpt of a document." .
+
+os:Document a owl:Class ; rdfs:comment "A source containing passages." .
+
+os:hasReview a owl:ObjectProperty ; rdfs:domain os:Case ; rdfs:range os:Review .
+
+os:listsCriterion a owl:ObjectProperty ; rdfs:domain os:Case ; rdfs:range os:Criterion .
+
+os:containsJudgment a owl:ObjectProperty ; rdfs:domain os:Review ; rdfs:range os:Judgment .
+
+os:appliesCriterion a owl:ObjectProperty ; rdfs:domain os:Judgment ; rdfs:range os:Criterion .
+
+os:cites a owl:ObjectProperty ; rdfs:domain os:Judgment ; rdfs:range os:Passage .
+
+os:partOf a owl:ObjectProperty ; rdfs:domain os:Passage ; rdfs:range os:Document .
+
+os:wording a owl:DatatypeProperty ; rdfs:domain os:Judgment ; rdfs:range <http://www.w3.org/2001/XMLSchema#string> .
+
+os:quote a owl:DatatypeProperty ; rdfs:domain os:Passage ; rdfs:range <http://www.w3.org/2001/XMLSchema#string> .

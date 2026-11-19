@@ -16,7 +16,7 @@ PROV = Namespace("http://www.w3.org/ns/prov#")
 MODEL = os.environ.get("OSR_MODEL", "qwen2.5:3b")
 MODELS = {"ollama": MODEL, "openai": os.environ.get("OSR_OPENAI_MODEL", "gpt-4o-mini"),
           "openrouter": os.environ.get("OSR_OPENROUTER_MODEL", "openai/gpt-4o-mini"),
-          "gemini": os.environ.get("OSR_GEMINI_MODEL", "gemini-flash-latest")}
+          "gemini": os.environ.get("OSR_GEMINI_MODEL", "gemini-3.8-flash")}
 PORT = 8765
 FIELDS = ("reviewer", "wording", "criterion", "passage")
 SCHEMA = {"type": "object", "properties": {"judgments": {"type": "array", "items": {

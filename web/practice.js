@@ -47,7 +47,7 @@ function startPractice(){
   $('practice-source').onchange=()=>{
     clearPair();const source=$('practice-source').value;
     $('practice-live').hidden=source==='example';$('practice-key').value='';
-    $('practice-model').value=({OpenAI:'gpt-4o-mini',OpenRouter:'openai/gpt-4o-mini',Gemini:'gemini-flash-latest'})[source]||'';
+    $('practice-model').value=({OpenAI:'gpt-4o-mini',OpenRouter:'openai/gpt-4o-mini',Gemini:'gemini-3.8-flash'})[source]||'';
     $('practice-compare').textContent=source==='example'?'Reveal comparison':'Request model answer';
   };
   $('practice-compare').onclick=async()=>{

@@ -119,7 +119,7 @@ Choose either provider in the same studio dropdown. Set its server-side key befo
 | Provider | Key variable | Optional model override | Default model |
 | --- | --- | --- | --- |
 | OpenRouter | `OPENROUTER_API_KEY` | `OSR_OPENROUTER_MODEL` | `openai/gpt-4o-mini` |
-| Google Gemini | `GEMINI_API_KEY` | `OSR_GEMINI_MODEL` | `gemini-flash-latest` |
+| Google Gemini | `GEMINI_API_KEY` | `OSR_GEMINI_MODEL` | `gemini-3.8-flash` |
 
 For example, in Bash:
 

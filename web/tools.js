@@ -42,7 +42,7 @@ function mountWorkbench(c){
   const system='Extract judgments using the OWL vocabulary. Copy wording exactly from the named review. Cite a supplied passage ID. Use the published criterion label when applicable. Omit unsupported links. Respond with JSON conforming to '+JSON.stringify(schema)+'\n'+ontology;
   const dossier=JSON.stringify({title:c.title,context:c.guide.context,rubric:[c.rubric],passages:sources,reviews},null,2);
   q('.prompt').value=system+'\n'+dossier;
-  const defaults={OpenRouter:'openai/gpt-4o-mini',Gemini:'gemini-flash-latest',OpenAI:'gpt-4o-mini'};
+  const defaults={OpenRouter:'openai/gpt-4o-mini',Gemini:'gemini-3.8-flash',OpenAI:'gpt-4o-mini'};
   function select(){secret.value='';model.value=defaults[provider.value];q('.sendto').textContent='Extraction sends this dossier and your key directly to '+provider.value+'. Your provider account covers usage. The page does not save the key.';}
   provider.onchange=select;select();
   function inspect(){
@@ -89,7 +89,11 @@ async function requestModel(name,key,id,system,dossier,schema){
 
 
       const res=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),redirect:'error',credentials:'omit',signal:AbortSignal.timeout(120000)});
-      if(!res.ok)throw Error('HTTP '+res.status+'. Check key, model access and quota.');
+      if(!res.ok){
+        const error=await res.json().catch(()=>({}));
+        const detail=String(error.error?.message||'').replaceAll(key,'[redacted]').slice(0,450);
+        throw Error(name+' '+id+' returned HTTP '+res.status+'. '+(detail||'Check provider availability, model access and quota.'));
+      }
       const data=await res.json();
       const text=name==='Gemini'?data.candidates?.[0]?.content?.parts?.filter(p=>!p.thought).map(p=>p.text).join(''):data.choices?.[0]?.message?.content;
       if(!text)throw Error('Provider returned no judgment text.');

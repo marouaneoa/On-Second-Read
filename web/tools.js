@@ -32,16 +32,17 @@ function mountGraph(c){
   }
   view.onchange=populate;node.onchange=draw;populate();
 }
+let pendingExtraction;
 function mountWorkbench(c){
   const {schema,ontology}=JSON.parse(document.querySelector('#data').textContent);
   const root=document.querySelector('#model-tool');
-  root.innerHTML='<h2>LLM workbench</h2><p>Ask a model which passage each reviewer used. Inspect its proposed links against the source before accepting its interpretation.</p><div class="controls"><label>Provider<select class="provider"><option>OpenRouter</option><option>Gemini</option><option>OpenAI</option></select></label><label>Model<input class="model"></label><label>Personal API key<input type="password" autocomplete="off" class="secret"></label></div><p class="sendto"></p><button class="primary run">Extract judgments</button><span role="status" class="status"></span><details><summary>Use another chat or local model</summary><p>Copy the prompt into your model and paste its JSON reply below.</p><textarea readonly class="prompt" aria-label="Extraction prompt"></textarea></details><label>Model response<textarea class="reply" placeholder=\'{"judgments": [...]}\'></textarea></label><button class="check">Inspect proposed evidence</button><div class="inspected" aria-live="polite"></div>';
+  root.innerHTML='<h2>LLM workbench</h2><p>Ask a model which passage each reviewer used. Inspect its proposed links against the source before accepting its interpretation.</p><div class="controls"><label>Provider<select class="provider"><option>OpenRouter</option><option>Gemini</option><option>OpenAI</option></select></label><label>Model<input class="model"></label><label>Personal API key<input type="password" autocomplete="off" class="secret"></label></div><p class="sendto"></p><button class="primary run">Extract judgments</button><button class="cancel" hidden>Cancel request</button><span role="status" class="status"></span><details><summary>Use another chat or local model</summary><p>Copy the prompt into your model and paste its JSON reply below.</p><textarea readonly class="prompt" aria-label="Extraction prompt"></textarea></details><label>Model response<textarea class="reply" placeholder=\'{"judgments": [...]}\'></textarea></label><button class="check">Inspect proposed evidence</button><div class="inspected" aria-live="polite"></div>';
   const q=s=>root.querySelector(s), provider=q('.provider'), model=q('.model'), secret=q('.secret'), reply=q('.reply'), status=q('.status');
   const sources=Object.fromEntries(Object.entries(c.passages).filter(([,p])=>p.original).map(([id,p])=>[id,p.text]));
   const reviews={'Reviewer A':c.reviews[0],'Reviewer B':c.reviews[1]};
-  const system='Extract judgments using the OWL vocabulary. Copy wording exactly from the named review. Cite a supplied passage ID. Use the published criterion label when applicable. Omit unsupported links. Respond with JSON conforming to '+JSON.stringify(schema)+'\n'+ontology;
+  const system='For each reviewer, extract each supported judgment. Use the reviewer name, a short exact excerpt for wording, the applicable criterion, and one supplied passage ID. Omit unsupported links. Use this OWL vocabulary:\n'+ontology;
   const dossier=JSON.stringify({title:c.title,context:c.guide.context,rubric:[c.rubric],passages:sources,reviews},null,2);
-  q('.prompt').value=system+'\n'+dossier;
+  q('.prompt').value=system+'\nReturn JSON conforming to '+JSON.stringify(schema)+'\n'+dossier;
   const defaults={OpenRouter:'openai/gpt-4o-mini',Gemini:'gemini-3.8-flash',OpenAI:'gpt-4o-mini'};
   function select(){secret.value='';model.value=defaults[provider.value];q('.sendto').textContent='Extraction sends this dossier and your key directly to '+provider.value+'. Your provider account covers usage. The page does not save the key.';}
   provider.onchange=select;select();
@@ -66,21 +67,36 @@ function mountWorkbench(c){
   q('.run').onclick=async()=>{
     const name=provider.value,key=secret.value.trim(),id=model.value.trim();
     if(!key||!id){status.textContent=' Enter a model and a key for '+name+'.';return;}
-    const btn=q('.run');btn.disabled=true;provider.disabled=true;status.textContent=' Extracting…';secret.value='';
-    const panel=btn.closest('section'), currentReply=reply;
+    const btn=q('.run'), cancel=q('.cancel'), controller=new AbortController();
+    pendingExtraction=controller;
+    btn.disabled=true;provider.disabled=true;model.disabled=true;cancel.hidden=false;secret.value='';
+    const start=performance.now();
+    const waiting=()=>{status.textContent=' Waiting for '+name+' · '+Math.floor((performance.now()-start)/1000)+'s elapsed (120s limit).';};
+    waiting();
+    const tick=setInterval(waiting,1000);
+    const deadline=setTimeout(()=>controller.abort('timeout'),120000);
+    cancel.onclick=()=>controller.abort('cancel');
     try{
-      const text=await requestModel(name,key,id,system,dossier,schema);
-      if(panel.contains(currentReply)){currentReply.value=text;inspect();status.textContent=' Response received.';}
-    }catch(e){status.textContent=' '+e.message+' You can also use the prompt and paste a response.';}
-    finally{btn.disabled=false;provider.disabled=false;}
+      const text=await requestModel(name,key,id,system,dossier,schema,controller.signal);
+      if(reply.isConnected&&!controller.signal.aborted){reply.value=text;inspect();status.textContent=' Response received in '+Math.ceil((performance.now()-start)/1000)+'s.';}
+    }catch(e){
+      if(controller.signal.aborted){
+        status.textContent=controller.signal.reason==='timeout'?' No complete response within 120 seconds. Retry or use the copy-and-paste option.':' Request cancelled.';
+      }else{status.textContent=' '+e.message+' You can also use the prompt and paste a response.';}
+    }finally{
+      clearInterval(tick);clearTimeout(deadline);
+      if(pendingExtraction===controller)pendingExtraction=null;
+      cancel.hidden=true;btn.disabled=false;provider.disabled=false;model.disabled=false;
+    }
   };
 }
 
-async function requestModel(name,key,id,system,dossier,schema){
+async function requestModel(name,key,id,system,dossier,schema,signal=AbortSignal.timeout(120000)){
     let url,body,headers={'Content-Type':'application/json'};
     if(name==='Gemini'){
       url='https://generativelanguage.googleapis.com/v1beta/models/'+encodeURIComponent(id)+':generateContent';headers['x-goog-api-key']=key;
       body={systemInstruction:{parts:[{text:system}]},contents:[{role:'user',parts:[{text:dossier}]}],generationConfig:{responseMimeType:'application/json',responseJsonSchema:schema}};
+      if(id==='gemini-3.8-flash')body.generationConfig.thinkingConfig={thinkingLevel:'LOW'};
     }else{
       url=name==='OpenRouter'?'https://openrouter.ai/api/v1/chat/completions':'https://api.openai.com/v1/chat/completions';
       headers.Authorization='Bearer '+key;body={model:id,messages:[{role:'system',content:system},{role:'user',content:dossier}],response_format:{type:'json_schema',json_schema:{name:'judgments',strict:true,schema}}};
@@ -88,7 +104,7 @@ async function requestModel(name,key,id,system,dossier,schema){
     }
 
 
-      const res=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),redirect:'error',credentials:'omit',signal:AbortSignal.timeout(120000)});
+      const res=await fetch(url,{method:'POST',headers,body:JSON.stringify(body),redirect:'error',credentials:'omit',signal});
       if(!res.ok){
         const error=await res.json().catch(()=>({}));
         const detail=String(error.error?.message||'').replaceAll(key,'[redacted]').slice(0,450);

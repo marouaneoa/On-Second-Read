@@ -18,6 +18,7 @@ function choices(name, items, offset){
   return items.map((text,i)=>`<label class="choice"><input required type="radio" name="${name}" value="${i+offset}">${esc(text)}</label>`).join('');
 }
 function openCase(){
+  pendingExtraction?.abort('navigate');
   current = cases.find(c => c.id === location.hash.slice(1));
   document.querySelector('#welcome').hidden=Boolean(current);
   document.querySelector('#investigation').hidden=!current;

@@ -103,3 +103,22 @@ python studio.py
 Restart any existing studio process first so it receives the environment variable. At **http://127.0.0.1:8765**, choose **Hosted · OpenAI API** and click **Propose judgments**. This sends the dossier and ontology to OpenAI and uses your account’s API credit. The Python server reads the key from its environment. To select a different model that supports strict JSON Schema, set `OSR_OPENAI_MODEL` before startup (default `gpt-4o-mini`).
 
 For the three-case benchmark, run `python evaluate.py --live --provider openai` with the same environment. Local Ollama remains the default.
+
+### Use OpenRouter or Google Gemini
+
+Choose either provider in the same studio dropdown. Set its server-side key before launching the studio or benchmark.
+
+| Provider | Key variable | Optional model override | Default model |
+| --- | --- | --- | --- |
+| OpenRouter | `OPENROUTER_API_KEY` | `OSR_OPENROUTER_MODEL` | `openai/gpt-4o-mini` |
+| Google Gemini | `GEMINI_API_KEY` | `OSR_GEMINI_MODEL` | `gemini-flash-latest` |
+
+For example, in Bash:
+
+```bash
+read -rsp 'OpenRouter key: ' OPENROUTER_API_KEY && echo
+export OPENROUTER_API_KEY
+python studio.py
+```
+
+For Gemini, use `GEMINI_API_KEY` in both shell commands. Restart the studio after changing keys or model settings. For a benchmark run use `python evaluate.py --live --provider openrouter` or `python evaluate.py --live --provider gemini`. Each request sends the dossier and ontology through the selected service. Choose models that support structured JSON output. See the [OpenRouter schema guide](https://openrouter.ai/docs/guides/features/structured-outputs) and [Gemini schema guide](https://ai.google.dev/gemini-api/docs/structured-output).

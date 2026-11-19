@@ -3,6 +3,7 @@ import json
 import os
 import uuid
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import quote
 from urllib.error import HTTPError
 from urllib.request import Request, urlopen
 
@@ -13,7 +14,9 @@ from casebook import CASES, QUERIES, ROOT, load, results
 OS = Namespace("https://example.org/on-second-read#")
 PROV = Namespace("http://www.w3.org/ns/prov#")
 MODEL = os.environ.get("OSR_MODEL", "qwen2.5:3b")
-MODELS = {"ollama": MODEL, "openai": os.environ.get("OSR_OPENAI_MODEL", "gpt-4o-mini")}
+MODELS = {"ollama": MODEL, "openai": os.environ.get("OSR_OPENAI_MODEL", "gpt-4o-mini"),
+          "openrouter": os.environ.get("OSR_OPENROUTER_MODEL", "openai/gpt-4o-mini"),
+          "gemini": os.environ.get("OSR_GEMINI_MODEL", "gemini-flash-latest")}
 PORT = 8765
 FIELDS = ("reviewer", "wording", "criterion", "passage")
 SCHEMA = {"type": "object", "properties": {"judgments": {"type": "array", "items": {
@@ -52,7 +55,7 @@ def validate_doc(d):
 
 def extract(d, provider="ollama"):
     if provider not in MODELS:
-        raise ValueError("Choose Ollama or OpenAI.")
+        raise ValueError("Unknown extraction provider.")
     d = validate_doc(d)
     vocab = (ROOT/"ontology/review.ttl").read_text()
     instruction = ("Map the dossier to judgments using the supplied OWL vocabulary. For each supported assessment "
@@ -62,11 +65,25 @@ def extract(d, provider="ollama"):
     messages = [dict(role="system", content=instruction), dict(role="user", content=json.dumps(d))]
     headers = {"Content-Type": "application/json"}
     body = dict(model=MODELS[provider], messages=messages, stream=False)
-    if provider == "openai":
-        key = os.environ.get("OPENAI_API_KEY", "").strip()
+    if provider != "ollama":
+        variable = provider.upper() + "_API_KEY"
+        key = os.environ.get(variable, "").strip()
         if not key:
-            raise ValueError("Set OPENAI_API_KEY in the studio or benchmark environment.")
+            raise ValueError(f"Set {variable} in the studio or benchmark environment.")
+    if provider == "gemini":
+        model = quote(MODELS[provider], safe="")
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent"
+        headers["x-goog-api-key"] = key
+        body = {
+            "systemInstruction": {"parts": [{"text": instruction}]},
+            "contents": [{"role": "user", "parts": [{"text": json.dumps(d)}]}],
+            "generationConfig": {"responseMimeType": "application/json", "responseJsonSchema": SCHEMA},
+        }
+    elif provider in ("openai", "openrouter"):
         url = "https://api.openai.com/v1/chat/completions"
+        if provider == "openrouter":
+            url = "https://openrouter.ai/api/v1/chat/completions"
+            body["provider"] = {"require_parameters": True}
         headers["Authorization"] = f"Bearer {key}"
         body["response_format"] = {"type": "json_schema", "json_schema": {
             "name": "judgment_extraction", "strict": True, "schema": SCHEMA}}
@@ -82,8 +99,14 @@ def extract(d, provider="ollama"):
     except OSError:
         raise ValueError(f"Could not reach {provider}. Check the service and network connection.") from None
     try:
-        message = payload["choices"][0]["message"] if provider == "openai" else payload["message"]
-        rows = json.loads(message["content"])["judgments"]
+        if provider == "gemini":
+            parts = payload["candidates"][0]["content"]["parts"]
+            content = "".join(part["text"] for part in parts if not part.get("thought"))
+        elif provider == "ollama":
+            content = payload["message"]["content"]
+        else:
+            content = payload["choices"][0]["message"]["content"]
+        rows = json.loads(content)["judgments"]
         if not isinstance(rows, list) or not all(isinstance(row, dict) and
                 all(isinstance(row.get(k), str) for k in FIELDS) for row in rows):
             raise ValueError

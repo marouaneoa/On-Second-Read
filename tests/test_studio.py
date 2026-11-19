@@ -54,3 +54,28 @@ class StudioTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "OPENAI_API_KEY"):
                 extract(examples()[0], "openai")
             endpoint.assert_not_called()
+
+    def test_openrouter_and_gemini(self):
+        case = examples()[0]
+        text = json.dumps({"judgments": case["gold"]})
+        for provider, reply, host in [
+            ("openrouter", {"choices":[{"message":{"content":text}}]}, "openrouter.ai"),
+            ("gemini", {"candidates":[{"content":{"parts":[{"text":text}]}}]}, "generativelanguage.googleapis.com"),
+        ]:
+            variable = provider.upper() + "_API_KEY"
+            with self.subTest(provider=provider), patch.dict("os.environ",{variable:"test-key"}), patch(
+                "studio.urlopen", return_value=BytesIO(json.dumps(reply).encode())
+            ) as endpoint:
+                self.assertEqual(extract(case,provider),case["gold"])
+                req = endpoint.call_args.args[0]
+                self.assertEqual(req.host,host)
+                body = json.loads(req.data)
+                if provider == "gemini":
+                    self.assertEqual(req.get_header("X-goog-api-key"),"test-key")
+                    self.assertIn("responseJsonSchema",body["generationConfig"])
+                else:
+                    self.assertEqual(req.get_header("Authorization"),"Bearer test-key")
+                    self.assertTrue(body["provider"]["require_parameters"])
+                self.assertNotIn('"gold"',json.dumps(body))
+            with patch.dict("os.environ",{variable:""}), self.assertRaisesRegex(ValueError,variable):
+                extract(case,provider)

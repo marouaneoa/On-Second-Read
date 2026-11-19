@@ -2,7 +2,7 @@
 import argparse
 import json
 
-from studio import FIELDS, MODEL, examples, extract
+from studio import FIELDS, MODELS, examples, extract
 
 
 def score(gold, proposed):
@@ -33,9 +33,13 @@ def first_link(d):
 
 if __name__=="__main__":
     parser=argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--live",action="store_true",help="also evaluate the configured Ollama model")
+    parser.add_argument("--live",action="store_true",help="also evaluate the selected model")
+    parser.add_argument("--provider",choices=MODELS,default="ollama")
     args=parser.parse_args()
     report={"first_link_baseline":evaluate(first_link)}
     if args.live:
-        report[MODEL]=evaluate(extract)
+        try:
+            report[MODELS[args.provider]]=evaluate(lambda d: extract(d,args.provider))
+        except ValueError as err:
+            parser.exit(1,f"{err}\n")
     print(json.dumps(report,indent=2,ensure_ascii=False))

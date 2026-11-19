@@ -34,3 +34,23 @@ class StudioTests(unittest.TestCase):
 
     def test_baseline(self):
         self.assertAlmostEqual(evaluate(first_link)["micro_f1"],4/6)
+
+    def test_hosted_extraction(self):
+        case = examples()[0]
+        reply = {"choices": [{"message": {"content": json.dumps({"judgments": case["gold"]})}}]}
+        with patch.dict("os.environ", {"OPENAI_API_KEY":"test-only"}), patch(
+            "studio.urlopen", return_value=BytesIO(json.dumps(reply).encode())
+        ) as endpoint:
+            self.assertEqual(extract(case, "openai"), case["gold"])
+            request = endpoint.call_args.args[0]
+            self.assertEqual(request.full_url, "https://api.openai.com/v1/chat/completions")
+            self.assertEqual(request.get_header("Authorization"), "Bearer test-only")
+            body = json.loads(request.data)
+            self.assertTrue(body["response_format"]["json_schema"]["strict"])
+            self.assertNotIn("gold", json.loads(body["messages"][1]["content"]))
+
+    def test_missing_hosted_key(self):
+        with patch.dict("os.environ", {"OPENAI_API_KEY":""}), patch("studio.urlopen") as endpoint:
+            with self.assertRaisesRegex(ValueError, "OPENAI_API_KEY"):
+                extract(examples()[0], "openai")
+            endpoint.assert_not_called()

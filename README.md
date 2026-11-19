@@ -74,7 +74,7 @@ Install [Ollama](https://ollama.com/download) and start its local service. With 
 ollama pull qwen2.5:3b
 ```
 
-Choose **Propose judgments with Ollama**. To use another installed model, launch the studio with `OSR_MODEL=your-model-name python studio.py`. The model receives the dossier and the OWL vocabulary. The request uses [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs) to propose reviewer, wording, criterion and passage fields. Reference answers are excluded from the request.
+Choose **Local · Ollama** and click **Propose judgments**. To use another installed model, launch the studio with `OSR_MODEL=your-model-name python studio.py`. The model receives the dossier and the OWL vocabulary. The request uses [Ollama structured outputs](https://docs.ollama.com/capabilities/structured-outputs) to propose reviewer, wording, criterion and passage fields. Reference answers are excluded from the request.
 
 1. Edit the dossier JSON to supply a complete rubric, identified source passages and named reviews.
 2. Review each proposed link. A valid passage ID shows that a passage exists. Deciding whether it supports the judgment requires reading it.
@@ -89,3 +89,17 @@ python evaluate.py --live > evaluation.json
 ```
 
 The first command runs a deterministic baseline that assigns the first rubric criterion and first passage to every review. It matches **4 of 6** authored judgments. The second compares the configured Ollama model against the same references. Each judgment is scored as an exact tuple of reviewer, excerpt, criterion and passage ID. The JSON reports per-case matches, extras and omissions plus micro precision, recall and F1. A synonymous criterion label or shorter accurate excerpt can therefore count as a miss. These six examples are a debugging benchmark. To estimate generalization, author independent cases and keep their labels out of prompt development.
+
+### Use an OpenAI API key
+
+The studio also supports OpenAI Chat Completions with [structured outputs](https://developers.openai.com/api/docs/guides/structured-outputs). In a Bash terminal with the project environment active, enter your key at the hidden prompt and start the server:
+
+```bash
+read -rsp 'OpenAI API key: ' OPENAI_API_KEY && echo
+export OPENAI_API_KEY
+python studio.py
+```
+
+Restart any existing studio process first so it receives the environment variable. At **http://127.0.0.1:8765**, choose **Hosted · OpenAI API** and click **Propose judgments**. This sends the dossier and ontology to OpenAI and uses your account’s API credit. The Python server reads the key from its environment. To select a different model that supports strict JSON Schema, set `OSR_OPENAI_MODEL` before startup (default `gpt-4o-mini`).
+
+For the three-case benchmark, run `python evaluate.py --live --provider openai` with the same environment. Local Ollama remains the default.
